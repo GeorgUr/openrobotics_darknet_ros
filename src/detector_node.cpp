@@ -96,7 +96,7 @@ DetectorNode::DetectorNode(rclcpp::NodeOptions options)
   network_cfg_desc.name = "network.config";
   const std::string network_config_path = declare_parameter(
     network_cfg_desc.name,
-    rclcpp::ParameterValue(),
+    rclcpp::ParameterValue("default_network"),
     network_cfg_desc).get<std::string>();
 
   rcl_interfaces::msg::ParameterDescriptor network_weights_desc;
@@ -106,7 +106,7 @@ DetectorNode::DetectorNode(rclcpp::NodeOptions options)
   network_weights_desc.name = "network.weights";
   const std::string network_weights_path = declare_parameter(
     network_weights_desc.name,
-    rclcpp::ParameterValue(),
+    rclcpp::ParameterValue("default_weights"),
     network_weights_desc).get<std::string>();
 
   rcl_interfaces::msg::ParameterDescriptor network_class_names_desc;
@@ -116,7 +116,7 @@ DetectorNode::DetectorNode(rclcpp::NodeOptions options)
   network_class_names_desc.name = "network.class_names";
   const std::string network_class_names_path = declare_parameter(
     network_class_names_desc.name,
-    rclcpp::ParameterValue(),
+    rclcpp::ParameterValue("default_class_names"),
     network_class_names_desc).get<std::string>();
 
   impl_->threshold_desc_.description = "Minimum detection confidence [0.0, 1.0]";
@@ -136,7 +136,7 @@ DetectorNode::DetectorNode(rclcpp::NodeOptions options)
     rclcpp::ParameterValue(impl_->nms_threshold_),
     impl_->nms_threshold_desc_).get<double>();
 
-  set_on_parameters_set_callback(
+  add_on_set_parameters_callback(
     std::bind(&DetectorNodePrivate::on_parameters_change, &*impl_, std::placeholders::_1));
 
   // TODO(sloretz) raise if user tried to initialize node with undeclared parameters
